@@ -1,34 +1,36 @@
 package com.school;
-import java.util.ArrayList;
 
 public class Main {
     public static void main(String[] args) {
+        System.out.println("--- School Attendance System ---");
 
-        Student s1 = new Student();
-        s1.setDetails(100, "Shivansh Garg");
-        Student s2 = new Student();
-        s2.setDetails(101, "Vikram");
+        // Using constructors for initialization
+        System.out.println("\nCreating Students and Courses using Constructors:");
+        Student student1 = new Student("Alice Wonderland");
+        Student student2 = new Student("Bob The Builder");
 
-        ArrayList<Student> Students = new ArrayList<>();
-        Students.add(s1);
-        Students.add(s2);
+        Course course1 = new Course("Intro to Programming");
+        Course course2 = new Course("Linear Algebra");
 
-        for (Student student : Students) {
-            student.displayDetails();
-        }
+        System.out.println("\nRegistered Students:");
+        student1.displayDetails();
+        student2.displayDetails();
 
-        Course c1 = new Course();
-        c1.setDetails(1, "Mastery Java in 100 Days");
-        Course c2 = new Course();
-        c2.setDetails(2, "Full Stack Web Development Course");
+        System.out.println("\nAvailable Courses:");
+        course1.displayDetails();
+        course2.displayDetails();
 
-        ArrayList<Course> courses = new ArrayList<>();
-        courses.add(c1);
-        courses.add(c2);
+        // Demonstrate auto-ID generation with new instances
+        System.out.println("\n--- Auto-ID Generation Test ---");
+        System.out.println("Creating one more student and course...");
+        Student student3 = new Student("Charlie Chaplin");
+        Course course3 = new Course("Data Structures");
 
-        for (Course course : courses) {
-            course.displayDetails();
-        }
+        System.out.print("New Student: ");
+        student3.displayDetails();
+        System.out.print("New Course: ");
+        course3.displayDetails();
 
+        System.out.println("\nSession 3: Constructor Initialization & Auto-ID Generation Complete.");
     }
 }
