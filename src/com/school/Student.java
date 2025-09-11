@@ -1,9 +1,6 @@
 package com.school;
 
-public class Student extends Person { // Extends Person
-    // private static int nextStudentIdCounter = 1; // Removed, uses Person's ID
-    // private int studentId;    // Removed, uses Person's id
-    // private String name;      // Removed, uses Person's name
+public class Student extends Person implements Storable { // Extends Person
 
     private String gradeLevel; // Example new specific field
 
@@ -21,5 +18,11 @@ public class Student extends Person { // Extends Person
     public void displayDetails() {
         super.displayDetails(); // Call Person's displayDetails
         System.out.println(", Grade Level: " + gradeLevel + " (Role: Student)");
+    }
+
+    @Override
+    public String toDataString() {
+        // Format: id,name,gradeLevel
+        return getId() + "," + getName() + "," + gradeLevel;
     }
 }
