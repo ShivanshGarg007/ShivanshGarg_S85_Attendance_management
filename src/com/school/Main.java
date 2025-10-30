@@ -4,11 +4,13 @@ import java.util.List;
 
 public class Main {
 
+    // displaySchoolDirectory is now better placed in RegistrationService or a ReportService
+    // For now, let's make it use RegistrationService data
     public static void displaySchoolDirectory(RegistrationService regService) {
         System.out.println("\n--- School Directory ---");
         List<Person> people = regService.getAllPeople();
         if (people.isEmpty()) {
-            System.out.println("No people in the directory.");
+            System.out.println("No people registered.");
             return;
         }
         for (Person person : people) {
@@ -17,60 +19,55 @@ public class Main {
     }
 
     public static void main(String[] args) {
-        System.out.println("--- School Administration & Attendance System (Polymorphism Demo) ---");
+        System.out.println("--- School System (Capacity Management & SOLID Reflection) ---");
 
-        // Create services
         FileStorageService storageService = new FileStorageService();
         RegistrationService registrationService = new RegistrationService(storageService);
         AttendanceService attendanceService = new AttendanceService(storageService, registrationService);
 
-        // Register students, teachers, staff, and courses
-        registrationService.registerStudent("Alice Wonderland", "Grade 10");
-        registrationService.registerStudent("Bob The Builder", "Grade 9");
-        registrationService.registerTeacher("Dr. Emily Carter", "Physics");
-        registrationService.registerStaff("Mr. John Davis", "Librarian");
+        System.out.println("\n--- Registering People ---");
+        Student student1 = registrationService.registerStudent("Alice Wonderland", "Grade 10");
+        Student student2 = registrationService.registerStudent("Bob The Builder", "Grade 9");
+        Student student3 = registrationService.registerStudent("Charlie Chaplin", "Grade 10"); // For capacity test
 
-        // Display school directory using RegistrationService
-        displaySchoolDirectory(registrationService);
+        System.out.println("\n--- Creating Courses with Capacity ---");
+        Course courseCS101 = registrationService.createCourse("Intro to Programming", 2); // Capacity of 2
+        Course courseMA202 = registrationService.createCourse("Linear Algebra", 30);
 
-        // Create courses
-        registrationService.createCourse("Intro to Quantum Physics");
-        registrationService.createCourse("Advanced Algorithms");
+        System.out.println("\n--- Enrolling Students in Courses ---");
+        registrationService.enrollStudentInCourse(student1, courseCS101);
+        registrationService.enrollStudentInCourse(student2, courseCS101);
+        registrationService.enrollStudentInCourse(student3, courseCS101); // This one should fail or show full
 
-        System.out.println("\n\n--- Available Courses ---");
-        for (Course c : registrationService.getCourses()) {
-            c.displayDetails();
+        registrationService.enrollStudentInCourse(student1, courseMA202); // Should succeed
+
+        System.out.println("\n--- Updated Course Details ---");
+        courseCS101.displayDetails();
+        courseMA202.displayDetails();
+
+        System.out.println("\n\n--- Marking Attendance ---");
+        // Student 1 in CS101
+        if (courseCS101.getEnrolledStudents().contains(student1)) { // Check enrollment before marking
+            attendanceService.markAttendance(student1, courseCS101, "Present");
+        } else {
+            System.out.println("Cannot mark attendance: " + student1.getName() + " not enrolled in " + courseCS101.getCourseName());
+        }
+        // Student 3 in CS101 (should not have been enrolled if capacity was 2)
+        if (courseCS101.getEnrolledStudents().contains(student3)) {
+            attendanceService.markAttendance(student3, courseCS101, "Absent");
+        } else {
+            System.out.println("Cannot mark attendance: " + student3.getName() + " not enrolled in " + courseCS101.getCourseName());
         }
 
-        // Get students and courses for attendance marking
-        List<Student> students = registrationService.getStudents();
-        List<Course> courses = registrationService.getCourses();
 
-        // Mark attendance using object-based method
-        if (students.size() >= 2 && courses.size() >= 1) {
-            attendanceService.markAttendance(students.get(0), courses.get(0), "Present");
-            attendanceService.markAttendance(students.get(1), courses.get(0), "Absent");
-        }
+        System.out.println("\n\n--- Attendance Log for CS101 ---");
+        attendanceService.displayAttendanceLog(courseCS101);
 
-        // Mark attendance using ID-based method
-        if (students.size() >= 1 && courses.size() >= 2) {
-            attendanceService.markAttendance(students.get(0).getId(), courses.get(1).getCourseId(), "Daydreaming");
-        }
-
-        // Display attendance logs
-        attendanceService.displayAttendanceLog();
-        if (students.size() >= 1) {
-            attendanceService.displayAttendanceLog(students.get(0));
-        }
-        if (courses.size() >= 1) {
-            attendanceService.displayAttendanceLog(courses.get(0));
-        }
-
-        // Save all data
-        System.out.println("\n\n--- Saving Data to Files ---");
-        registrationService.saveAllRegistrations();
+        System.out.println("\n\n--- Saving All Data ---");
+        registrationService.saveAllRegistrations(); // Will save courses with their capacity
         attendanceService.saveAttendanceData();
 
-        System.out.println("\nSession Complete: All data saved successfully.");
+        System.out.println("\nSession 10: Capacity Management & SOLID Reflection Complete.");
+        System.out.println("Project Finished! Congratulations!");
     }
 }

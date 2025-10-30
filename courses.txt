@@ -1,2 +1,2 @@
-101,Intro to Quantum Physics
-102,Advanced Algorithms
+101,Intro to Programming,2
+102,Linear Algebra,30
